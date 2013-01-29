@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor
+  license agreements. See the NOTICE file distributed with this work for additional
+  information regarding copyright ownership. The ASF licenses this file to
+  You under the Apache License, Version 2.0 (the "License"); you may not use
+  this file except in compliance with the License. You may obtain a copy of
+  the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required
+  by applicable law or agreed to in writing, software distributed under the
+  License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+  OF ANY KIND, either express or implied. See the License for the specific
+  language governing permissions and limitations under the License. -->
+
+<project name="cas-sample-java-webapp" default="deploy" basedir=".">
+
+	<!-- ******************* PROPERTIES ************************* -->
+	<property name="build.target.dir" value="target" />
+
+	<property environment="env" />
+
+	<property name="catalina.home" value="c:/portal/apache-tomcat" /> 
+	<!-- <property name="catalina.home" value="c:/portal/jetty" /> -->
+	
+	<condition property="mavenExecutableFile" value="mvn.bat" else="mvn">
+		<os family="windows" />
+	</condition>
+	<property name="mavenExecutable" value="${env.M2_HOME}\bin\${mavenExecutableFile}" />
+
+	<condition property="tomcatStartupFile" value="startup.bat" else="startup">
+		<os family="windows" />
+	</condition>
+	<property name="tomcatStartup" value="${catalina.home}\bin\${tomcatStartupFile}" />
+
+	<condition property="tomcatShutDownFile" value="shutdown.bat" else="shutdown">
+		<os family="windows" />
+	</condition>
+	<property name="tomcatShutDown" value="${catalina.home}\bin\${tomcatShutDownFile}" />
+	<!-- ******************************************************** -->
+
+	<target name="cleanTomcatLogs" description="Clean tomcat log files">
+		<delete failonerror="false">
+			<fileset dir="${catalina.home}/logs" includes="**/*.log,**/*.txt" />
+			<fileset dir="${catalina.home}/bin" includes="**/*.log,**/*.txt" />
+		</delete>
+	</target>
+
+	<target name="clean" description="Clean deployed artifacts and logs">
+		<delete file="${catalina.home}/webapps/${ant.project.name}.war" verbose="false" />
+		<delete file="${catalina.home}/bin/${ant.project.name}.log" verbose="false" />
+		<delete dir="${catalina.home}/webapps/${ant.project.name}" verbose="false" includeemptydirs="true" />
+		<delete dir="${catalina.home}/work/Catalina" verbose="false" includeemptydirs="true" />
+
+		<delete dir="cas-server-uber-webapp/target" verbose="false" includeemptydirs="true" />
+		<delete dir="cas-server-webapp/target" verbose="false" includeemptydirs="true" />
+		<delete dir="cas-server-core/target" verbose="false" includeemptydirs="true" />
+
+		<exec dir="." executable="${mavenExecutable}">
+			<arg value="clean" />
+			<arg value="-Dmaven.test.skip=true" />
+		</exec>
+
+		<antcall target="cleanTomcatLogs" />
+	</target>
+
+	<target name="compile" description="Compile artifacts" depends="clean">
+		<exec dir="." executable="${mavenExecutable}">
+			<arg value="compile" />
+			<arg value="-Dmaven.test.skip=true" />
+		</exec>
+	</target>
+
+	<target name="test" description="Compile artifacts and run tests" depends="clean">
+		<exec dir="." executable="${mavenExecutable}">
+			<arg value="test" />
+		</exec>
+	</target>
+
+
+	<target name="copy" description="Copy artifacts over to tomcat" depends="package">
+		<copy overwrite="true"
+		      todir="${catalina.home}\webapps"
+		      file="target/${ant.project.name}.war"
+			  verbose="true"
+		/>
+	</target>
+
+	<target name="package" description="Package src artifacts and prepare for deployment" depends="clean">
+		<exec dir="." executable="${mavenExecutable}">
+			<arg value="clean" />
+			<arg value="package" />
+			<arg value="-Dmaven.test.skip=true" />
+		</exec>
+	</target>
+
+	<target name="install" description="Package src artifacts and prepare for deployment" depends="clean">
+		<exec dir="." executable="${mavenExecutable}">
+
+			<arg value="clean" />
+			<arg value="install" />
+			<arg value="-Dmaven.test.skip=true" />
+
+		</exec>
+	</target>
+
+
+	<target name="deploy" depends="copy" description="Clean, package and deploy artifacts" />
+
+	<target name="startTomcat" description="Start the tomcat server">
+		<exec dir="${catalina.home}" executable="${tomcatStartup}" />
+	</target>
+
+	<target name="stopTomcat" description="Stop the tomcat server">
+		<exec dir="${catalina.home}" executable="${tomcatShutDown}" />
+	</target>
+
+
+	<target name="help" description="Prints instructions on how to run the build.">
+		<echo message="Use 'ant -projecthelp' to see all available commands" />
+	</target>
+
+	<target name="init"
+	        depends="stopTomcat, deploy, startTomcat"
+	        description="Deploy all changes to tomcat and restart"
+	/>
+</project>
+
