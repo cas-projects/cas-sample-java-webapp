@@ -2,6 +2,7 @@
 <%@page pageEncoding="UTF-8"%>
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.Iterator" %>
+<%@ page import="java.util.List" %>
 <%@ page import="org.jasig.cas.client.authentication.AttributePrincipal" %>
  
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
@@ -47,8 +48,19 @@
             String attributeName = (String) attributeNames.next();
             out.println(attributeName);
             out.println("</td><td>");
-            Object attributeValue = attributes.get(attributeName);
-            out.println(attributeValue);
+            final Object attributeValue = attributes.get(attributeName);
+
+            if (attributeValue instanceof List) {
+              final List values = (List) attributeValue;
+              out.println("<strong>Multi-valued attribute: " + values.size() + "</strong>");
+              out.println("<ul>");
+              for (Object value: values) {
+                out.println("<li>" + value + "</li>");
+              }
+              out.println("</ul>");
+            } else {
+              out.println(attributeValue);
+            }
             out.println("</td></tr>");
           }
           out.println("</table>");
