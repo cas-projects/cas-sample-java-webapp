@@ -26,4 +26,14 @@ Pull up the URL `https://[server-address]/cas-sample-java-webapp` in your browse
 You'll immediately be redirected to the CAS server login page, and back to the application with authentication 
 details and attributes displayed in the [`index.jsp`](https://github.com/Unicon/iam-labs/blob/master/cas-sample-java-webapp/src/main/webapp/index.jsp) file.
 
+##Testing High Availability
+Assuming you have deployed CAS on two nodes, you can use the sample application to make sure all nodes are properly
+sharing the ticket state. To do this, in the `web.xml` file ensure that:
+
+- The `casServerLoginUrl` of the `CAS Authentication Filter` points to CAS node 1.
+- The `casServerUrlPrefix` of the `CAS Validation Filter` points to CAS node 2.
+- For both of the above filters, the `serverName` should always point to the location where *this sample application* is deployed.
+
+
+
 
