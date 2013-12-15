@@ -30,9 +30,12 @@ details and attributes displayed in the [`index.jsp`](https://github.com/Unicon/
 Assuming you have deployed CAS on two nodes, you can use the sample application to make sure all nodes are properly
 sharing the ticket state. To do this, in the `web.xml` file ensure that:
 
-- The `casServerLoginUrl` of the `CAS Authentication Filter` points to CAS node 1.
-- The `casServerUrlPrefix` of the `CAS Validation Filter` points to CAS node 2.
+- The `casServerLoginUrl` of the `CAS Authentication Filter` points to CAS node 1 (i.e `https://cas1.sso.edu:8443/cas/login`).
+- The `casServerUrlPrefix` of the `CAS Validation Filter` points to CAS node 2 (i.e `https://cas2.sso.edu:8443/cas`)
 - For both of the above filters, the `serverName` should always point to the location where *this sample application* is deployed.
+
+
+Deploy the application and test. You may also want to reverse the order of CAS nodes 1 and 2 in the above cnfiguration, redeploy and test again.
 
 
 
