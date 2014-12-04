@@ -5,7 +5,7 @@ This is sample java web application that exercises the CAS protocol features via
 Configure
 ---------
 
-- Adjust the url endpoints of the CAS server and the application server in the [`web.xml`](https://github.com/Unicon/iam-labs/blob/master/cas-sample-java-webapp/src/main/webapp/WEB-INF/web.xml) file.
+- Adjust the url endpoints of the CAS server and the application server in the [`web.xml`](https://github.com/UniconLabs/cas-sample-java-webapp/blob/master/src/main/webapp/WEB-INF/web.xml) file.
 - If you wish to exercise proxy authentication, switch your CAS client filters to be `AuthenticationFilter` and `Cas20ProxyReceivingTicketValidationFilter` in the same file.
 
 ##Build
