@@ -37,6 +37,8 @@ sharing the ticket state. To do this, in the `web.xml` file ensure that:
 
 Deploy the application and test. You may also want to reverse the order of CAS nodes 1 and 2 in the above cnfiguration, redeploy and test again.
 
+> Alternatively, one could test distributed CAS nodes without any client application set up using [this](https://github.com/UniconLabs/duct) small command line utility
+
 
 
 
