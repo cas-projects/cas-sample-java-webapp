@@ -5,28 +5,22 @@ This is sample java web application that exercises the CAS protocol features via
 Configure
 ---------
 
-- Adjust the url endpoints of the CAS server and the application server in the [`web.xml`](https://github.com/UniconLabs/cas-sample-java-webapp/blob/master/src/main/webapp/WEB-INF/web.xml) file.
-- If you wish to exercise proxy authentication, switch your CAS client filters to be `AuthenticationFilter` and `Cas20ProxyReceivingTicketValidationFilter` in the same file.
+- Adjust the url endpoints of the CAS server and 
+the application server in the [`web.xml`](https://github.com/UniconLabs/cas-sample-java-webapp/blob/master/src/main/webapp/WEB-INF/web.xml) file.
 
-##Build
+## Build
 
-###Ant Build
+* Create a Java keystore at `/etc/cas/jetty/thekeystore` with the password `changeit`.
+* Import your server certificate inside this keystore.
 
-- Adjust the [`build.xml`](https://github.com/Unicon/iam-labs/blob/master/cas-sample-java-webapp/build.xml) file to note the location of the application server and the way environment variables are configured. (i.e. `catalina.home`, `M2_HOME`, etc)
-- From the root of the project directory run `ant deploy`. 
-- The resulting WAR file will be available inside the container's `webapps` directory as `cas-sample-java-webapp.war`
+```bash
+mvn clean package jetty:run-forked
+```
 
-###Maven Build
+The application will be available on ports 9080 (http) and 9443 (https).
+ 
+## Testing High Availability
 
-- If you prefer a Maven build, From the root of the project directory run `mvn clean package`. 
-- The resulting WAR file will be available inside the prohject's `target` directory as `cas-sample-java-webapp.war`. Copy the file over to your container's environment. 
-
-##Run
-Pull up the URL `https://[server-address]/cas-sample-java-webapp` in your browser. 
-You'll immediately be redirected to the CAS server login page, and back to the application with authentication 
-details and attributes displayed in the [`index.jsp`](https://github.com/Unicon/iam-labs/blob/master/cas-sample-java-webapp/src/main/webapp/index.jsp) file.
-
-##Testing High Availability
 Assuming you have deployed CAS on two nodes, you can use the sample application to make sure all nodes are properly
 sharing the ticket state. To do this, in the `web.xml` file ensure that:
 
@@ -35,9 +29,11 @@ sharing the ticket state. To do this, in the `web.xml` file ensure that:
 - For both of the above filters, the `serverName` should always point to the location where *this sample application* is deployed.
 
 
-Deploy the application and test. You may also want to reverse the order of CAS nodes 1 and 2 in the above cnfiguration, redeploy and test again.
+Deploy the application and test. You may also want to reverse the order of CAS 
+nodes 1 and 2 in the above configuration, redeploy and test again.
 
-> Alternatively, one could test distributed CAS nodes without any client application set up using [this](https://github.com/UniconLabs/duct) small command line utility
+> Alternatively, one could test distributed CAS nodes without any client application 
+set up using [this](https://github.com/UniconLabs/duct) small command line utility
 
 
 
