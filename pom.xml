@@ -28,7 +28,7 @@
                     <systemProperties>
                         <systemProperty>
                             <name>org.eclipse.jetty.annotations.maxWait</name>
-                            <value>240</value>
+                            <value>300</value>
                         </systemProperty>
                     </systemProperties>
                     <webApp>
